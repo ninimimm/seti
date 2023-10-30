@@ -12,9 +12,15 @@ context.load_verify_locations(cafile="client.crt")
 with socket.create_server((hostname, port)) as server_sock:
     server_sock = context.wrap_socket(server_sock, server_side=True)
     print("Сервер запущен...")
+
     while True:
         client_sock, addr = server_sock.accept()
         with client_sock:
             print("Соединение установлено с", addr)
-            data = client_sock.recv(2048)
-            print("Получено от клиента:", data)
+            while True:
+                data = client_sock.recv(2048)
+                if not data:
+                    break
+                print("Получено от клиента:", data)
+                response = input("Ответ сервера: ")
+                client_sock.send(response.encode('utf-8'))

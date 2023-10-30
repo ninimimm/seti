@@ -10,5 +10,9 @@ context.verify_mode = ssl.CERT_OPTIONAL
 
 with socket.create_connection((hostname, port)) as sock:
     with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-        ssock.sendall(b"GET / HTTP/1.1\r\nHost: " + bytes(hostname, 'utf-8') + b"\r\n\r\n")
-        print(ssock.recv(2048))
+        print("Соединение установлено с сервером.")
+        while True:
+            message = input("Введите сообщение: ")
+            ssock.send(message.encode('utf-8'))
+            response = ssock.recv(2048)
+            print("Получено от сервера:", response.decode('utf-8'))
